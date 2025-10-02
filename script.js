@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initialiserReservations();
     initialiserFormulairePresence();
     initialiserFormulairePagne();
-    initialiserCondoleances();
+    initialiserFormulaireCondoleances();
+    chargerMessagesCondoleances();
 });
 
 // Gestion des réservations d'hôtel
@@ -183,7 +184,7 @@ async function traiterConfirmationPresence() {
 
     // Validation : au moins un événement doit être sélectionné
     if (evenementsSelectionnes.length === 0) {
-        alert('❌ Veuillez sélectionner au moins un événement.');
+        alert('❌ Veuillez sélectionner au moins un événement à Abengourou.');
         return;
     }
 
@@ -193,6 +194,7 @@ async function traiterConfirmationPresence() {
         email: formData.get('email'),
         evenements: evenementsSelectionnes,
         nombrePersonnes: formData.get('nombre-personnes'),
+        besoinHebergement: formData.get('besoin-hebergement'),
         message: formData.get('message')
     };
 
@@ -205,7 +207,7 @@ async function traiterConfirmationPresence() {
     }
 }
 
-// Traitement de la commande de pagne - VERSION CORRIGÉE
+// Traitement de la commande de pagne
 async function traiterCommandePagne() {
     const formData = new FormData(document.getElementById('form-pagne'));
     
@@ -233,17 +235,19 @@ async function traiterCommandePagne() {
         quantite: quantite,
         taille: formData.get('taille'),
         nom: nom.trim(),
-        telephone: telephone.trim(),
-        email: formData.get('email-pagne') || '' // Ajout du champ email si disponible
+        telephone: telephone.trim()
     };
 
     console.log('📦 Envoi commande pagne:', commande);
 
     // Désactiver le bouton pendant l'envoi
     const submitBtn = document.querySelector('#form-pagne .btn-submit');
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = 'Envoi en cours...';
-    submitBtn.disabled = true;
+    const originalText = submitBtn ? submitBtn.textContent : 'Commander';
+    
+    if (submitBtn) {
+        submitBtn.textContent = 'Envoi en cours...';
+        submitBtn.disabled = true;
+    }
 
     try {
         const result = await envoyerDonneesAPI('commande-pagne', commande);
@@ -259,8 +263,10 @@ async function traiterCommandePagne() {
         alert(`❌ Erreur: ${error.message}\n\nVeuillez nous appeler directement au +225 01-01-10-47-47`);
     } finally {
         // Réactiver le bouton
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
+        if (submitBtn) {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }
     }
 }
 
@@ -284,85 +290,68 @@ function initialiserFormulairePagne() {
     });
 }
 
-// Gestion des condoléances
-function initialiserCondoleances() {
+// Gestion du formulaire de condoléances
+function initialiserFormulaireCondoleances() {
     const form = document.getElementById('form-condoleances');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            traiterCondoleances();
-        });
-    }
     
-    // Charger les condoléances existantes
-    chargerCondoleances();
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        traiterCondoleances();
+    });
 }
 
-// Fonction pour traiter les condoléances
+// Traitement des condoléances
 async function traiterCondoleances() {
     const formData = new FormData(document.getElementById('form-condoleances'));
     
-    const condoleance = {
-        nom: formData.get('nom'),
-        relation: formData.get('relation'),
-        message: formData.get('message')
-    };
+    const nom = formData.get('nom-condoleances');
+    const message = formData.get('message-condoleances');
 
-    // Validation du message
-    if (!condoleance.message.trim()) {
+    if (!nom || !nom.trim()) {
+        alert('❌ Veuillez entrer votre nom.');
+        return;
+    }
+
+    if (!message || !message.trim()) {
         alert('❌ Veuillez écrire un message de condoléances.');
         return;
     }
+
+    const condoleance = {
+        nom: nom.trim(),
+        message: message.trim(),
+        date: new Date().toISOString()
+    };
 
     try {
         const result = await envoyerDonneesAPI('condoleances', condoleance);
         alert('✅ ' + result.message);
         document.getElementById('form-condoleances').reset();
-        chargerCondoleances(); // Recharger la liste
+        chargerMessagesCondoleances();
     } catch (error) {
         alert('❌ Erreur: ' + error.message);
     }
 }
 
-// Fonction pour charger les condoléances
-async function chargerCondoleances() {
+// Charger les messages de condoléances
+async function chargerMessagesCondoleances() {
     try {
         const response = await fetch(`${API_BASE_URL}/condoleances`);
-        if (!response.ok) {
-            throw new Error(`Erreur HTTP: ${response.status}`);
-        }
-        const condoleances = await response.json();
+        const messages = await response.json();
         
-        afficherCondoleances(condoleances);
+        const container = document.getElementById('messages-condoleances');
+        if (container) {
+            container.innerHTML = messages.map(msg => `
+                <div class="message-condoleance">
+                    <strong>${msg.nom}</strong>
+                    <span class="date-condoleance">${new Date(msg.date).toLocaleDateString('fr-FR')}</span>
+                    <p>${msg.message}</p>
+                </div>
+            `).join('');
+        }
     } catch (error) {
         console.error('Erreur chargement condoléances:', error);
-        // En cas d'erreur, afficher un message vide
-        afficherCondoleances([]);
     }
-}
-
-// Fonction pour afficher les condoléances
-function afficherCondoleances(condoleances) {
-    const container = document.querySelector('#liste-condoleances .messages-container');
-    if (!container) return;
-    
-    if (condoleances.length === 0) {
-        container.innerHTML = `
-            <div class="message-vide">
-                <p>Soyez le premier à laisser un message de condoléances.</p>
-            </div>
-        `;
-        return;
-    }
-    
-    container.innerHTML = condoleances.map(condoleance => `
-        <div class="message-condoleance">
-            <div class="nom-condoleance">${condoleance.nom}</div>
-            ${condoleance.relation ? `<div class="relation-condoleance">${condoleance.relation}</div>` : ''}
-            <div class="texte-condoleance">${condoleance.message}</div>
-            <div class="date">${new Date(condoleance.date).toLocaleDateString('fr-FR')}</div>
-        </div>
-    `).join('');
 }
 
 // Smooth scroll pour la navigation
@@ -380,30 +369,4 @@ document.querySelectorAll('nav a').forEach(anchor => {
             });
         }
     });
-});
-
-// Fonction utilitaire pour formater les dates
-function formaterDate(dateString) {
-    const options = { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    };
-    return new Date(dateString).toLocaleDateString('fr-FR', options);
-}
-
-// Gestion des erreurs globales
-window.addEventListener('error', function(e) {
-    console.error('Erreur globale:', e.error);
-});
-
-// Empêcher le formulaire de se soumettre avec Enter sauf pour les textareas
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
-        if (e.target.form) {
-            e.preventDefault();
-        }
-    }
 });

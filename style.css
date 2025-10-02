@@ -1,14 +1,14 @@
-/* Variables de couleurs - Bleu nuit */
+/* Variables CSS */
 :root {
-    --bleu-nuit: #0a1931;
-    --bleu-fonce: #1e3a5f;
-    --bleu-moyen: #2c5282;
-    --bleu-clair: #3182ce;
-    --bleu-tres-clair: #ebf8ff;
-    --blanc: #ffffff;
-    --texte: #2d3748;
-    --texte-clair: #718096;
-    --border: #e2e8f0;
+    --primary-color: #0a1931;
+    --secondary-color: #185adb;
+    --accent-color: #ffc947;
+    --text-color: #333333;
+    --light-bg: #f8f9fa;
+    --white: #ffffff;
+    --border-color: #dee2e6;
+    --success-color: #28a745;
+    --error-color: #dc3545;
 }
 
 /* Reset et styles de base */
@@ -21,21 +21,22 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
-    color: var(--texte);
-    background-color: var(--bleu-tres-clair);
+    color: var(--text-color);
+    background-color: var(--light-bg);
 }
 
 /* Header */
 header {
-    background: linear-gradient(135deg, var(--bleu-nuit), var(--bleu-fonce));
-    color: var(--blanc);
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: var(--white);
     text-align: center;
-    padding: 3rem 1rem;
+    padding: 2rem 1rem;
     position: relative;
+    overflow: hidden;
 }
 
 .header-content {
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
@@ -44,7 +45,7 @@ header {
     height: 150px;
     border-radius: 50%;
     object-fit: cover;
-    border: 4px solid var(--blanc);
+    border: 4px solid var(--accent-color);
     margin-bottom: 1rem;
 }
 
@@ -61,34 +62,39 @@ header p {
 
 /* Navigation */
 nav {
-    background-color: var(--bleu-nuit);
+    background-color: var(--white);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1000;
 }
 
 nav ul {
     display: flex;
     justify-content: center;
     list-style: none;
-    padding: 1rem;
-    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
 }
 
 nav li {
-    margin: 0 1rem;
+    margin: 0;
 }
 
 nav a {
-    color: var(--blanc);
+    display: block;
+    padding: 1rem 1.5rem;
     text-decoration: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
+    color: var(--primary-color);
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
 }
 
 nav a:hover {
-    background-color: var(--bleu-fonce);
+    background-color: var(--light-bg);
+    border-bottom-color: var(--accent-color);
 }
 
 /* Sections principales */
@@ -99,20 +105,49 @@ main {
 }
 
 .section {
-    background: var(--blanc);
-    margin: 2rem 0;
+    background-color: var(--white);
+    margin-bottom: 2rem;
     padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    border-left: 4px solid var(--bleu-nuit);
+    border-radius: 10px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.1);
 }
 
 .section h2 {
-    color: var(--bleu-nuit);
+    color: var(--primary-color);
     margin-bottom: 1.5rem;
-    font-size: 1.8rem;
-    border-bottom: 2px solid var(--bleu-tres-clair);
+    font-size: 2rem;
+    border-bottom: 2px solid var(--accent-color);
     padding-bottom: 0.5rem;
+}
+
+/* Faire-part */
+.faire-part-container {
+    text-align: center;
+}
+
+.message-faire-part h3 {
+    color: var(--secondary-color);
+    font-size: 1.8rem;
+    margin: 1rem 0;
+}
+
+.details-defunte {
+    background-color: var(--light-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    text-align: left;
+}
+
+.details-defunte p {
+    margin-bottom: 0.5rem;
+}
+
+.message-adieu {
+    font-style: italic;
+    color: var(--secondary-color);
+    font-size: 1.1rem;
+    margin-top: 1rem;
 }
 
 /* Programme */
@@ -122,45 +157,40 @@ main {
 }
 
 .evenement {
-    background: var(--bleu-tres-clair);
+    background-color: var(--light-bg);
     padding: 1.5rem;
-    border-radius: 6px;
-    border-left: 4px solid var(--bleu-nuit);
+    border-radius: 8px;
+    border-left: 4px solid var(--secondary-color);
 }
 
 .evenement h3 {
-    color: var(--bleu-nuit);
+    color: var(--primary-color);
     margin-bottom: 0.5rem;
 }
 
 .date {
-    color: var(--bleu-fonce);
+    color: var(--secondary-color);
     font-weight: bold;
     margin-bottom: 0.5rem;
 }
 
 .lieu {
-    color: var(--texte);
+    color: var(--text-color);
     margin-bottom: 1rem;
 }
 
-/* Boutons */
-.btn-localisation, .btn-reserver, .btn-submit, .btn-commander, .btn-paiement {
-    background-color: var(--bleu-nuit);
-    color: var(--blanc);
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-    text-decoration: none;
+.btn-localisation {
     display: inline-block;
-    text-align: center;
+    background-color: var(--secondary-color);
+    color: var(--white);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
 }
 
-.btn-localisation:hover, .btn-reserver:hover, .btn-submit:hover, .btn-commander:hover, .btn-paiement:hover {
-    background-color: var(--bleu-fonce);
+.btn-localisation:hover {
+    background-color: var(--primary-color);
 }
 
 /* Formulaires */
@@ -168,37 +198,62 @@ main {
     margin-bottom: 1.5rem;
 }
 
-label {
+.form-group label {
     display: block;
     margin-bottom: 0.5rem;
-    color: var(--bleu-nuit);
     font-weight: 500;
+    color: var(--primary-color);
 }
 
-input, select, textarea {
+.form-group input,
+.form-group select,
+.form-group textarea {
     width: 100%;
     padding: 0.75rem;
-    border: 1px solid var(--border);
-    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
     font-size: 1rem;
+    transition: border-color 0.3s ease;
 }
 
-input:focus, select:focus, textarea:focus {
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
     outline: none;
-    border-color: var(--bleu-nuit);
-    box-shadow: 0 0 0 3px rgba(10, 25, 49, 0.1);
+    border-color: var(--secondary-color);
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .checkbox-group label {
     display: flex;
     align-items: center;
-    margin-bottom: 0.5rem;
     font-weight: normal;
+    cursor: pointer;
 }
 
 .checkbox-group input {
     width: auto;
     margin-right: 0.5rem;
+}
+
+.btn-submit {
+    background-color: var(--secondary-color);
+    color: var(--white);
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-submit:hover {
+    background-color: var(--primary-color);
 }
 
 /* Hébergement */
@@ -209,321 +264,213 @@ input:focus, select:focus, textarea:focus {
 }
 
 .hotel {
-    background: var(--bleu-tres-clair);
+    background-color: var(--light-bg);
     padding: 1.5rem;
-    border-radius: 6px;
+    border-radius: 8px;
     text-align: center;
-    border-left: 4px solid var(--bleu-nuit);
+}
+
+.hotel h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
 }
 
 .prix {
-    color: var(--bleu-fonce);
     font-weight: bold;
-    font-size: 1.2rem;
+    color: var(--secondary-color);
     margin: 1rem 0;
+}
+
+.btn-reserver {
+    background-color: var(--accent-color);
+    color: var(--primary-color);
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-reserver:hover {
+    background-color: #ffb624;
 }
 
 /* Pagne */
 .pagne-container {
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 300px 1fr;
     gap: 2rem;
     align-items: start;
 }
 
 .pagne-image img {
     width: 100%;
-    border-radius: 6px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
 .prix-pagne {
     text-align: center;
-    font-size: 1.3rem;
-    color: var(--bleu-fonce);
     font-weight: bold;
+    color: var(--secondary-color);
     margin-top: 1rem;
+    font-size: 1.2rem;
 }
 
 .paiement-info {
-    background: var(--bleu-tres-clair);
+    background-color: var(--light-bg);
     padding: 1.5rem;
-    border-radius: 4px;
-    margin-top: 1rem;
-    text-align: center;
-    border-left: 4px solid var(--bleu-nuit);
+    border-radius: 8px;
+    margin-top: 1.5rem;
 }
 
 .btn-paiement {
-    margin-top: 1rem;
-    font-size: 1.1rem;
-    padding: 1rem 2rem;
-}
-
-/* Familles */
-.liste-familles {
-    list-style: none;
-    margin: 1rem 0;
-}
-
-.liste-familles li {
-    padding: 0.5rem 0;
-    border-bottom: 1px solid var(--border);
-}
-
-.liste-familles li:before {
-    content: "•";
-    color: var(--bleu-nuit);
-    font-weight: bold;
     display: inline-block;
-    width: 1em;
-    margin-left: -1em;
+    background-color: var(--success-color);
+    color: var(--white);
+    padding: 1rem 2rem;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-paiement:hover {
+    background-color: #218838;
+}
+
+/* Condoléances */
+.condoleances-form {
+    margin-bottom: 2rem;
+}
+
+.messages-container {
+    margin-top: 2rem;
+}
+
+.message-condoleance {
+    background-color: var(--light-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    border-left: 4px solid var(--secondary-color);
+}
+
+.date-condoleance {
+    color: #666;
+    font-size: 0.9rem;
+    margin-left: 1rem;
+}
+
+/* Familles et remerciements */
+.familles-container {
+    text-align: center;
+}
+
+.message-familles p {
+    margin-bottom: 1rem;
+    line-height: 1.8;
 }
 
 .message-final {
     font-style: italic;
-    text-align: center;
-    margin-top: 2rem;
-    color: var(--bleu-nuit);
+    color: var(--secondary-color);
     font-size: 1.1rem;
+    margin-top: 1rem;
 }
 
-/* Footer */
-footer {
-    background-color: var(--bleu-nuit);
-    color: var(--blanc);
-    text-align: center;
-    padding: 2rem 1rem;
-    margin-top: 3rem;
-}
-
-/* Modals */
+/* Modal */
 .modal {
     display: none;
     position: fixed;
-    z-index: 1000;
+    z-index: 2000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    overflow-y: auto; /* Permet le défilement de la modal */
+    background-color: rgba(0,0,0,0.5);
+    backdrop-filter: blur(5px);
 }
 
 .modal-content {
-    background-color: var(--blanc);
-    margin: 2% auto;
+    background-color: var(--white);
+    margin: 5% auto;
     padding: 2rem;
-    border-radius: 8px;
+    border-radius: 10px;
     width: 90%;
     max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
     position: relative;
-    border-left: 4px solid var(--bleu-nuit);
-    max-height: 90vh; /* Hauteur maximale */
-    overflow-y: auto; /* Défilement interne si nécessaire */
 }
 
 .close {
-    color: var(--texte-clair);
+    color: #aaa;
     float: right;
-    font-size: 2rem;
+    font-size: 28px;
     font-weight: bold;
     cursor: pointer;
     line-height: 1;
-    position: sticky;
-    top: 0;
-    z-index: 1;
 }
 
 .close:hover {
-    color: var(--texte);
+    color: var(--error-color);
 }
 
-/* Pour les écrans plus petits */
-@media (max-width: 768px) {
-    .modal-content {
-        margin: 5% auto;
-        width: 95%;
-        padding: 1.5rem;
-    }
-}
-
-@media (max-height: 700px) {
-    .modal-content {
-        margin: 1% auto;
-        max-height: 98vh;
-    }
+/* Footer */
+footer {
+    background-color: var(--primary-color);
+    color: var(--white);
+    text-align: center;
+    padding: 2rem 1rem;
+    margin-top: 2rem;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    nav ul {
-        flex-direction: column;
-        align-items: center;
+    header h1 {
+        font-size: 2rem;
     }
     
-    nav li {
-        margin: 0.5rem 0;
+    nav ul {
+        flex-direction: column;
+    }
+    
+    nav a {
+        padding: 0.75rem 1rem;
+        text-align: center;
+    }
+    
+    .section {
+        padding: 1.5rem;
     }
     
     .pagne-container {
         grid-template-columns: 1fr;
     }
     
-    .header-content h1 {
-        font-size: 2rem;
+    .hotels-container {
+        grid-template-columns: 1fr;
     }
     
     .modal-content {
         margin: 10% auto;
         width: 95%;
+        padding: 1.5rem;
     }
 }
 
 @media (max-width: 480px) {
+    header h1 {
+        font-size: 1.5rem;
+    }
+    
     .section {
         padding: 1rem;
     }
     
-    header {
-        padding: 2rem 1rem;
-    }
-    
-    .photo-defunte {
-        width: 120px;
-        height: 120px;
-    }
-}
-
-/* Faire Part */
-.message-important {
-    text-align: center;
-    padding: 2rem;
-    background: linear-gradient(135deg, var(--bleu-tres-clair), #e6f3ff);
-    border-radius: 8px;
-    border-left: 4px solid var(--bleu-nuit);
-}
-
-.defunte-info {
-    margin: 2rem 0;
-    padding: 1.5rem;
-    background: var(--blanc);
-    border-radius: 6px;
-    border: 1px solid var(--border);
-}
-
-.defunte-info h3 {
-    color: var(--bleu-nuit);
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
-}
-
-.message-famille {
-    font-size: 1.1rem;
-    margin: 1.5rem 0;
-    line-height: 1.8;
-}
-
-.signature {
-    font-style: italic;
-    color: var(--bleu-fonce);
-    font-size: 1.2rem;
-    margin-top: 2rem;
-}
-
-/* Communiqués */
-.communiques-container {
-    display: grid;
-    gap: 1.5rem;
-}
-
-.communique {
-    background: var(--bleu-tres-clair);
-    padding: 1.5rem;
-    border-radius: 6px;
-    border-left: 4px solid var(--bleu-nuit);
-}
-
-.date-communique {
-    color: var(--texte-clair);
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
-}
-
-.communique h3 {
-    color: var(--bleu-nuit);
-    margin-bottom: 0.5rem;
-}
-
-/* Condoléances */
-.condoleances-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-}
-
-.message-form {
-    background: var(--bleu-tres-clair);
-    padding: 1.5rem;
-    border-radius: 6px;
-}
-
-.condoleances-messages {
-    background: var(--blanc);
-    padding: 1.5rem;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    max-height: 600px;
-    overflow-y: auto;
-}
-
-.messages-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.message-condoleance {
-    background: var(--bleu-tres-clair);
-    padding: 1rem;
-    border-radius: 6px;
-    border-left: 3px solid var(--bleu-nuit);
-}
-
-.nom-condoleance {
-    font-weight: bold;
-    color: var(--bleu-nuit);
-    margin-bottom: 0.5rem;
-}
-
-.relation-condoleance {
-    color: var(--texte-clair);
-    font-size: 0.9rem;
-    font-style: italic;
-    margin-bottom: 0.5rem;
-}
-
-.message-condoleance .date {
-    color: var(--texte-clair);
-    font-size: 0.8rem;
-    text-align: right;
-    margin-top: 0.5rem;
-}
-
-.message-vide {
-    text-align: center;
-    color: var(--texte-clair);
-    font-style: italic;
-    padding: 2rem;
-}
-
-/* Responsive pour les condoléances */
-@media (max-width: 768px) {
-    .condoleances-container {
-        grid-template-columns: 1fr;
-    }
-    
-    .condoleances-messages {
-        max-height: 400px;
+    .evenement {
+        padding: 1rem;
     }
 }
