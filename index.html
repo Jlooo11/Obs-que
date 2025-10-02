@@ -17,11 +17,14 @@
 
     <nav>
         <ul>
-            <li><a href="#programme">Programme</a></li>
-            <li><a href="#presence">Confirmation</a></li>
-            <li><a href="#hotels">Hébergement</a></li>
-            <li><a href="#pagne">Pagne</a></li>
-            <li><a href="#familles">Familles</a></li>
+        <li><a href="#faire-part">Faire Part</a></li>
+        <li><a href="#programme">Programme</a></li>
+        <li><a href="#communiques">Communiqués</a></li>
+        <li><a href="#condoleances">Condoléances</a></li>
+        <li><a href="#presence">Confirmation</a></li>
+        <li><a href="#hotels">Hébergement</a></li>
+        <li><a href="#pagne">Pagne</a></li>
+        <li><a href="#familles">Familles</a></li>
         </ul>
     </nav>
 
@@ -72,6 +75,94 @@
                 </div>
             </div>
         </section>
+
+        <!-- Après la section programme -->
+<section id="faire-part" class="section">
+    <h2>Faire Part</h2>
+    <div class="message-important">
+        <p>C'est avec une grande tristesse que nous vous annonçons le décès de notre chère Maman :</p>
+        <div class="defunte-info">
+            <h3>BOA Delphine - Tchoumanssoua</h3>
+        </div>
+        <p class="message-famille">
+            La famille éplorée vous prie de bien vouloir lui réserver une pieuse et fraternelle pensée 
+            et de prier pour le repos de son âme.
+        </p>
+        <p class="signature">
+            « Que son âme repose en paix »
+        </p>
+    </div>
+</section>
+
+<section id="communiques" class="section">
+    <h2>Communiqués</h2>
+    <div class="communiques-container">
+        <div class="communique">
+            <h3>📢 Information importante</h3>
+            <p class="date-communique">Publié le 2 Octobre 2025</p>
+            <p>Nous tenons à remercier toutes les personnes qui nous ont témoigné leur soutien depuis l'annonce du décès.</p>
+        </div>
+        
+        <div class="communique">
+            <h3>🕯️ Organisation des cérémonies</h3>
+            <p class="date-communique">Publié le 2 Octobre 2025</p>
+            <p>Le programme détaillé des obsèques est maintenant disponible. Merci de confirmer votre présence pour une meilleure organisation.</p>
+        </div>
+        
+        <div class="communique">
+            <h3>👗 Pagne commémoratif</h3>
+            <p class="date-communique">Publié le 2 Octobre 2025</p>
+            <p>Le pagne commémoratif est disponible à la commande. Pensez à commander à l'avance pour assurer la disponibilité.</p>
+        </div>
+    </div>
+</section>
+
+<section id="condoleances" class="section">
+    <h2>Livre de Condoléances</h2>
+    <div class="condoleances-container">
+        <div class="condoleances-form">
+            <h3>Exprimez vos condoléances</h3>
+            <p>Laissez un message de soutien à la famille</p>
+            
+            <form id="form-condoleances" class="message-form">
+                <div class="form-group">
+                    <label for="nom-condoleances">Votre nom *</label>
+                    <input type="text" id="nom-condoleances" name="nom" required placeholder="Votre nom complet">
+                </div>
+
+                <div class="form-group">
+                    <label for="relation">Votre relation avec la défunte</label>
+                    <select id="relation" name="relation">
+                        <option value="">Choisir...</option>
+                        <option value="famille">Famille</option>
+                        <option value="ami">Ami(e)</option>
+                        <option value="voisin">Voisin(e)</option>
+                        <option value="collègue">Collègue</option>
+                        <option value="autre">Autre</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="message-condoleances">Votre message de condoléances *</label>
+                    <textarea id="message-condoleances" name="message" rows="6" required 
+                              placeholder="Exprimez vos condoléances et votre soutien à la famille..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">Publier votre message</button>
+            </form>
+        </div>
+
+        <div class="condoleances-messages" id="liste-condoleances">
+            <h3>Messages de condoléances</h3>
+            <div class="messages-container">
+                <!-- Les messages seront ajoutés dynamiquement -->
+                <div class="message-vide">
+                    <p>Soyez le premier à laisser un message de condoléances.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
         <section id="presence" class="section">
             <h2>Confirmation de Présence</h2>
@@ -136,23 +227,23 @@
         </section>
 
         <section id="hotels" class="section">
-            <h2>Hébergement</h2>
-            <div class="hotels-container">
-                <div class="hotel">
-                    <h3>Hôtel Recommandé 1</h3>
-                    <p>À proximité des cérémonies</p>
-                    <p class="prix">Prix: 25,000 FCFA/nuit</p>
-                    <button class="btn-reserver" data-hotel="hotel1">Réserver</button>
-                </div>
+    <h2>Hébergement</h2>
+    <div class="hotels-container">
+        <div class="hotel">
+            <h3>Résidence Magne Azur</h3>
+            <p>Confort et élégance</p>
+            <p class="prix">Prix: 25,000 FCFA/nuit</p>
+            <button class="btn-reserver" data-hotel="magne-azur">Réserver</button>
+        </div>
 
-                <div class="hotel">
-                    <h3>Hôtel Recommandé 2</h3>
-                    <p>Confort et proximité</p>
-                    <p class="prix">Prix: 30,000 FCFA/nuit</p>
-                    <button class="btn-reserver" data-hotel="hotel2">Réserver</button>
-                </div>
-            </div>
-        </section>
+        <div class="hotel">
+            <h3>Le Royaume</h3>
+            <p>Prestige et qualité de service exceptionnelle</p>
+            <p class="prix">Prix: 30,000 FCFA/nuit</p>
+            <button class="btn-reserver" data-hotel="royaume">Réserver</button>
+        </div>
+    </div>
+</section>
 
         <section id="pagne" class="section">
             <h2>Pagne Commémoratif</h2>

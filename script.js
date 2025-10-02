@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initialiserReservations();
     initialiserFormulairePresence();
     initialiserFormulairePagne();
+    initialiserCondoleances();
 });
 
 // Gestion des réservations d'hôtel
@@ -244,6 +245,87 @@ function initialiserFormulairePagne() {
     });
 }
 
+// Gestion des condoléances
+function initialiserCondoleances() {
+    const form = document.getElementById('form-condoleances');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            traiterCondoleances();
+        });
+    }
+    
+    // Charger les condoléances existantes
+    chargerCondoleances();
+}
+
+// Fonction pour traiter les condoléances
+async function traiterCondoleances() {
+    const formData = new FormData(document.getElementById('form-condoleances'));
+    
+    const condoleance = {
+        nom: formData.get('nom'),
+        relation: formData.get('relation'),
+        message: formData.get('message')
+    };
+
+    // Validation du message
+    if (!condoleance.message.trim()) {
+        alert('❌ Veuillez écrire un message de condoléances.');
+        return;
+    }
+
+    try {
+        const result = await envoyerDonneesAPI('condoleances', condoleance);
+        alert('✅ ' + result.message);
+        document.getElementById('form-condoleances').reset();
+        chargerCondoleances(); // Recharger la liste
+    } catch (error) {
+        alert('❌ Erreur: ' + error.message);
+    }
+}
+
+// Fonction pour charger les condoléances
+async function chargerCondoleances() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/condoleances`);
+        if (!response.ok) {
+            throw new Error(`Erreur HTTP: ${response.status}`);
+        }
+        const condoleances = await response.json();
+        
+        afficherCondoleances(condoleances);
+    } catch (error) {
+        console.error('Erreur chargement condoléances:', error);
+        // En cas d'erreur, afficher un message vide
+        afficherCondoleances([]);
+    }
+}
+
+// Fonction pour afficher les condoléances
+function afficherCondoleances(condoleances) {
+    const container = document.querySelector('#liste-condoleances .messages-container');
+    if (!container) return;
+    
+    if (condoleances.length === 0) {
+        container.innerHTML = `
+            <div class="message-vide">
+                <p>Soyez le premier à laisser un message de condoléances.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = condoleances.map(condoleance => `
+        <div class="message-condoleance">
+            <div class="nom-condoleance">${condoleance.nom}</div>
+            ${condoleance.relation ? `<div class="relation-condoleance">${condoleance.relation}</div>` : ''}
+            <div class="texte-condoleance">${condoleance.message}</div>
+            <div class="date">${new Date(condoleance.date).toLocaleDateString('fr-FR')}</div>
+        </div>
+    `).join('');
+}
+
 // Smooth scroll pour la navigation
 document.querySelectorAll('nav a').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
@@ -259,4 +341,30 @@ document.querySelectorAll('nav a').forEach(anchor => {
             });
         }
     });
+});
+
+// Fonction utilitaire pour formater les dates
+function formaterDate(dateString) {
+    const options = { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    };
+    return new Date(dateString).toLocaleDateString('fr-FR', options);
+}
+
+// Gestion des erreurs globales
+window.addEventListener('error', function(e) {
+    console.error('Erreur globale:', e.error);
+});
+
+// Empêcher le formulaire de se soumettre avec Enter sauf pour les textareas
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+        if (e.target.form) {
+            e.preventDefault();
+        }
+    }
 });

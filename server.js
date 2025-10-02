@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const nodemailer = require('nodemailer');  // CORRECTION ICI
+const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 const app = express();
@@ -18,8 +18,8 @@ if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
     process.exit(1);
 }
 
-// Configuration de nodemailer - CORRECTION ICI
-const transporter = nodemailer.createTransport({  // "nodemailer" pas "nodesList"
+// Configuration de nodemailer
+const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
         user: process.env.EMAIL_USER,
@@ -35,6 +35,9 @@ transporter.verify(function(error, success) {
         console.log('✅ Serveur email prêt à envoyer des messages');
     }
 });
+
+// Stockage en mémoire pour les condoléances (en production, utilisez une base de données)
+let condoleancesStore = [];
 
 // Route de test
 app.get('/', (req, res) => {
@@ -226,6 +229,85 @@ app.post('/api/commande-pagne', async (req, res) => {
     }
 });
 
+// Route pour les condoléances
+app.post('/api/condoleances', async (req, res) => {
+    try {
+        const { nom, relation, message } = req.body;
+
+        console.log('💌 Nouveau message de condoléances:', { nom });
+
+        // Ajouter aux condoléances stockées
+        const nouvelleCondoleance = {
+            id: Date.now().toString(),
+            nom,
+            relation: relation || '',
+            message,
+            date: new Date().toISOString()
+        };
+        
+        condoleancesStore.unshift(nouvelleCondoleance); // Ajouter au début
+        condoleancesStore = condoleancesStore.slice(0, 50); // Garder seulement les 50 derniers
+
+        const mailOptions = {
+            from: `"Site Obsèques" <${process.env.EMAIL_USER}>`,
+            to: 'sylvia.b@bloowmoney.com',
+            subject: 'Nouveau message de condoléances - Obsèques',
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <h2 style="color: #0a1931; border-bottom: 2px solid #0a1931; padding-bottom: 10px;">
+                        💌 Nouveau message de condoléances
+                    </h2>
+
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0;">
+                        <h3 style="color: #0a1931; margin-top: 0;">Informations:</h3>
+                        <p><strong>Nom:</strong> ${nom}</p>
+                        <p><strong>Relation:</strong> ${relation || 'Non spécifiée'}</p>
+                    </div>
+
+                    <div style="background: #fff3cd; padding: 20px; border-radius: 5px; margin: 20px 0;">
+                        <h3 style="color: #856404; margin-top: 0;">Message:</h3>
+                        <p style="font-style: italic; line-height: 1.6;">"${message}"</p>
+                    </div>
+
+                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #dee2e6;">
+                        <p style="color: #6c757d; font-size: 12px;">
+                            📧 Envoyé automatiquement depuis le site des obsèques
+                        </p>
+                    </div>
+                </div>
+            `
+        };
+
+        await transporter.sendMail(mailOptions);
+        console.log('✅ Email de condoléances envoyé à sylvia.b@bloowmoney.com');
+        
+        res.json({ 
+            success: true, 
+            message: 'Votre message de condoléances a été envoyé',
+            condoleance: nouvelleCondoleance
+        });
+    } catch (error) {
+        console.error('❌ Erreur envoi email condoléances:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Erreur lors de l\'envoi du message' 
+        });
+    }
+});
+
+// Route pour récupérer les condoléances
+app.get('/api/condoleances', (req, res) => {
+    try {
+        res.json(condoleancesStore);
+    } catch (error) {
+        console.error('❌ Erreur récupération condoléances:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Erreur lors de la récupération des condoléances' 
+        });
+    }
+});
+
 // Démarrer le serveur
 app.listen(PORT, () => {
     console.log('🚀 ==========================================');
@@ -239,6 +321,8 @@ app.listen(PORT, () => {
     console.log('   POST /api/confirmation-presence');
     console.log('   POST /api/reservation-hotel');
     console.log('   POST /api/commande-pagne');
+    console.log('   POST /api/condoleances');
+    console.log('   GET  /api/condoleances');
     console.log('   GET  / (test)');
     console.log('🚀 ==========================================');
     console.log('✅ Le backend est maintenant opérationnel!');
