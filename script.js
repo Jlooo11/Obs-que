@@ -205,23 +205,62 @@ async function traiterConfirmationPresence() {
     }
 }
 
-// Traitement de la commande de pagne
+// Traitement de la commande de pagne - VERSION CORRIGÉE
 async function traiterCommandePagne() {
     const formData = new FormData(document.getElementById('form-pagne'));
     
+    // Validation côté client
+    const nom = formData.get('nom-pagne');
+    const telephone = formData.get('telephone-pagne');
+    const quantite = parseInt(formData.get('quantite'));
+
+    if (!nom || !nom.trim()) {
+        alert('❌ Veuillez entrer votre nom.');
+        return;
+    }
+
+    if (!telephone || !telephone.trim()) {
+        alert('❌ Veuillez entrer votre numéro de téléphone.');
+        return;
+    }
+
+    if (!quantite || quantite < 1) {
+        alert('❌ Veuillez sélectionner une quantité valide.');
+        return;
+    }
+
     const commande = {
-        quantite: parseInt(formData.get('quantite')),
+        quantite: quantite,
         taille: formData.get('taille'),
-        nom: formData.get('nom-pagne'),
-        telephone: formData.get('telephone-pagne')
+        nom: nom.trim(),
+        telephone: telephone.trim(),
+        email: formData.get('email-pagne') || '' // Ajout du champ email si disponible
     };
+
+    console.log('📦 Envoi commande pagne:', commande);
+
+    // Désactiver le bouton pendant l'envoi
+    const submitBtn = document.querySelector('#form-pagne .btn-submit');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Envoi en cours...';
+    submitBtn.disabled = true;
 
     try {
         const result = await envoyerDonneesAPI('commande-pagne', commande);
-        alert('✅ ' + result.message);
-        document.getElementById('form-pagne').reset();
+        
+        if (result.success) {
+            alert(`✅ ${result.message}\n\nQuantité: ${result.details.quantite}\nMontant: ${result.details.montant.toLocaleString()} FCFA`);
+            document.getElementById('form-pagne').reset();
+        } else {
+            throw new Error(result.message);
+        }
     } catch (error) {
-        alert('❌ Erreur: ' + error.message);
+        console.error('❌ Erreur commande pagne:', error);
+        alert(`❌ Erreur: ${error.message}\n\nVeuillez nous appeler directement au +225 01-01-10-47-47`);
+    } finally {
+        // Réactiver le bouton
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
     }
 }
 

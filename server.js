@@ -175,56 +175,131 @@ app.post('/api/reservation-hotel', async (req, res) => {
     }
 });
 
-// Route pour la commande de pagne
+// Route pour la commande de pagne - VERSION CORRIGÉE
 app.post('/api/commande-pagne', async (req, res) => {
     try {
-        const { quantite, taille, nom, telephone } = req.body;
+        const { quantite, taille, nom, telephone, email } = req.body;
 
-        console.log('👗 Nouvelle commande de pagne:', { nom, telephone, quantite });
+        console.log('👗 Nouvelle commande de pagne:', { nom, telephone, quantite, taille });
+
+        // Validation des données requises
+        if (!nom || !telephone || !quantite) {
+            return res.status(400).json({
+                success: false,
+                message: 'Nom, téléphone et quantité sont obligatoires'
+            });
+        }
+
+        const quantiteNum = parseInt(quantite);
+        const prixUnitaire = 6700;
+        const montantTotal = quantiteNum * prixUnitaire;
 
         const mailOptions = {
             from: `"Site Obsèques" <${process.env.EMAIL_USER}>`,
-            to: 'sylvia.b@bloowmoney.com',
-            subject: 'Nouvelle commande de pagne - Obsèques',
+            to: 'sylvia.b@bloowmoney.com', // Vérifiez cette adresse
+            subject: `Nouvelle commande de pagne - ${nom}`,
             html: `
-                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                    <h2 style="color: #0a1931; border-bottom: 2px solid #0a1931; padding-bottom: 10px;">
-                        👗 Nouvelle commande de pagne
-                    </h2>
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="utf-8">
+                    <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                        .header { background: #0a1931; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }
+                        .content { background: #f8f9fa; padding: 20px; border-radius: 0 0 5px 5px; }
+                        .detail { background: white; padding: 15px; margin: 10px 0; border-radius: 5px; border-left: 4px solid #0a1931; }
+                        .montant { background: #d4edda; padding: 15px; margin: 15px 0; border-radius: 5px; text-align: center; font-size: 1.2em; font-weight: bold; }
+                        .footer { margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 0.9em; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            <h1>👗 NOUVELLE COMMANDE DE PAGNE</h1>
+                            <p>Site des Obsèques - BOA Delphine</p>
+                        </div>
+                        
+                        <div class="content">
+                            <div class="detail">
+                                <h3>Informations du client</h3>
+                                <p><strong>Nom :</strong> ${nom}</p>
+                                <p><strong>Téléphone :</strong> ${telephone}</p>
+                                ${email ? `<p><strong>Email :</strong> ${email}</p>` : ''}
+                            </div>
 
-                    <div style="background: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0;">
-                        <h3 style="color: #0a1931; margin-top: 0;">Détails de la commande:</h3>
-                        <p><strong>Nom:</strong> ${nom}</p>
-                        <p><strong>Téléphone:</strong> ${telephone}</p>
-                        <p><strong>Quantité:</strong> ${quantite}</p>
-                        <p><strong>Taille:</strong> ${taille}</p>
-                        <p><strong>Montant total:</strong> ${quantite * 6700} FCFA</p>
-                    </div>
+                            <div class="detail">
+                                <h3>Détails de la commande</h3>
+                                <p><strong>Quantité :</strong> ${quantiteNum} pagne(s)</p>
+                                <p><strong>Taille :</strong> ${taille || 'Standard'}</p>
+                                <p><strong>Prix unitaire :</strong> ${prixUnitaire.toLocaleString()} FCFA</p>
+                            </div>
 
-                    <div style="background: #d1ecf1; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                        <h4 style="color: #0c5460; margin-top: 0;">Instructions:</h4>
-                        <p>Contacter le client pour finaliser la commande.</p>
-                        <p><strong>Lien de paiement:</strong> <a href="https://pay.jeko.africa/pl/abf040fb-3e66-4090-9063-4ac9b83586d4">https://pay.jeko.africa/pl/abf040fb-3e66-4090-9063-4ac9b83586d4</a></p>
-                    </div>
+                            <div class="montant">
+                                <h3>MONTANT TOTAL</h3>
+                                <p style="font-size: 1.5em; color: #155724;">${montantTotal.toLocaleString()} FCFA</p>
+                            </div>
 
-                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #dee2e6;">
-                        <p style="color: #6c757d; font-size: 12px;">
-                            📧 Envoyé automatiquement depuis le site des obsèques
-                        </p>
+                            <div class="detail">
+                                <h3>Instructions importantes</h3>
+                                <p>➤ Contacter le client au <strong>${telephone}</strong> pour confirmer la commande</p>
+                                <p>➤ Le paiement peut être effectué via le lien suivant :</p>
+                                <p style="text-align: center; margin: 15px 0;">
+                                    <a href="https://pay.jeko.africa/pl/abf040fb-3e66-4090-9063-4ac9b83586d4" 
+                                       style="background: #0a1931; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                                        🔗 Accéder au lien de paiement
+                                    </a>
+                                </p>
+                                <p><strong>Lien :</strong> https://pay.jeko.africa/pl/abf040fb-3e66-4090-9063-4ac9b83586d4</p>
+                            </div>
+                        </div>
+
+                        <div class="footer">
+                            <p>📧 Email envoyé automatiquement depuis le site des obsèques</p>
+                            <p>🕒 ${new Date().toLocaleString('fr-FR')}</p>
+                        </div>
                     </div>
-                </div>
+                </body>
+                </html>
             `
         };
 
-        await transporter.sendMail(mailOptions);
-        console.log('✅ Email de commande pagne envoyé à sylvia.b@bloowmoney.com');
+        console.log('📤 Tentative d\'envoi d\'email...');
         
-        res.json({ success: true, message: 'Commande de pagne envoyée avec succès' });
+        // Envoi de l'email avec timeout
+        const emailPromise = transporter.sendMail(mailOptions);
+        const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('Timeout d\'envoi d\'email')), 10000);
+        });
+
+        await Promise.race([emailPromise, timeoutPromise]);
+        
+        console.log('✅ Email de commande pagne envoyé avec succès à sylvia.b@bloowmoney.com');
+        
+        res.json({ 
+            success: true, 
+            message: 'Commande de pagne envoyée avec succès. Vous serez contacté pour confirmation.',
+            details: {
+                quantite: quantiteNum,
+                taille: taille || 'Standard',
+                montant: montantTotal
+            }
+        });
+
     } catch (error) {
-        console.error('❌ Erreur envoi email pagne:', error);
+        console.error('❌ Erreur détaillée envoi email pagne:', error);
+        
+        // Log plus détaillé pour le debugging
+        console.log('🔍 Détails de la commande qui a échoué:', req.body);
+        console.log('🔍 Configuration email:', {
+            service: 'gmail',
+            user: process.env.EMAIL_USER ? 'Défini' : 'Non défini'
+        });
+
         res.status(500).json({ 
             success: false, 
-            message: 'Erreur lors de l\'envoi de la commande' 
+            message: 'Erreur lors de l\'envoi de la commande. Veuillez réessayer ou nous contacter directement.',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 });
